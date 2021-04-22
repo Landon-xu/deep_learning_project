@@ -1,21 +1,8 @@
 import torch
 import os
 import cv2
-
-
-dataset = []
-
-
-def make_dataset(org_img_folder, target):
-    img_list = get_file_list(org_img_folder, [], 'png')
-    for x in range(len(img_list)):
-        img_path = img_list[x]
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        # if len(img.shape) == 3:
-        #     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_tensor = torch.tensor(img, dtype=torch.int)
-
-        dataset.append([img_tensor, target])
+import numpy as np
+from torch.autograd import Variable
 
 
 def get_file_list(dir, file_list, ext=None):
@@ -35,5 +22,31 @@ def get_file_list(dir, file_list, ext=None):
     return file_list
 
 
-make_dataset('./True', 1)
-make_dataset('./False', 0)
+def make_dataset(org_img_folder, target, dataset):
+    img_list = get_file_list(org_img_folder, [], 'png')
+    for x in range(len(img_list)):
+        img_path = img_list[x]
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img_tensor = torch.tensor(img, dtype=torch.int)
+
+        img_tensor = Variable(torch.unsqueeze(img_tensor, dim=0).float(), requires_grad=True)  # 增加一个维度
+
+        dataset.append([img_tensor, target])
+
+    print('Get {} images'.format(len(dataset)))
+
+
+def start_make_dataset():
+    training_set = []
+    testing_set = []
+    make_dataset('./True', 1, training_set)
+    make_dataset('./False', 0, training_set)
+    make_dataset('./True_test', 1, testing_set)
+    make_dataset('./False_test', 0, testing_set)
+    return training_set, testing_set
+
+
+# 测试本函数
+start_make_dataset()
