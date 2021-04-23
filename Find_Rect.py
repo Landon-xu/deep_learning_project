@@ -24,7 +24,7 @@ def crop_rect(img, rect):  # 旋转图像转正 https://blog.csdn.net/loovelj/ar
     return img_crop, img_rot
 
 
-def find_rectangle(img_path):
+def find_rect(img_path):
     im = cv2.imread(img_path)
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)  # 转换为灰度图
 
@@ -34,6 +34,8 @@ def find_rectangle(img_path):
     cnts = contours[0]
 
     img_return = []
+
+    i = 1
 
     for cnt in cnts:
         # 最小外接矩形框，有方向角
@@ -57,4 +59,4 @@ def find_rectangle(img_path):
     return img_return
 
 
-# find_rectangle('./image_license_plate/123.jpeg')
+# find_rect('./image_license_plate/111.jpeg')
