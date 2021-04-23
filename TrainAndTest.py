@@ -84,22 +84,25 @@ def single_test(file_path):
     model = TOFCNN()
     model.load_state_dict(torch.load(saving_path))    # Load the saved model
 
-    print("Single image test")
+    # print("Single image test")
 
     img = cv2.imread(file_path, cv2.IMREAD_COLOR)                 # Get the image (.png)
-    img = cv2.resize(img, (300, 150), interpolation=cv2.INTER_AREA)  # resize 300 * 150
+    img = cv2.resize(img, (200, 200), interpolation=cv2.INTER_AREA)  # resize 300 * 150
+    if len(img.shape) == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     image_tensor = torch.tensor(img, dtype=torch.int)     # Transform image into a tensor
     image_tensor = Variable(torch.unsqueeze(image_tensor, dim=0).float())
-    # image_tensor = Variable(torch.unsqueeze(image_tensor, dim=0).float())
+    image_tensor = Variable(torch.unsqueeze(image_tensor, dim=0).float())
 
     with torch.no_grad():
         model.eval()
         output = model(image_tensor)          # Get the output tensor
         _, predicted = torch.max(output, 1)         # Get the index of the predicted label
-        result = predicted[0]   # ?         # Get the predicted label
-        print("Result: " + result)
+        result = predicted[0]             # Get the predicted label
+        print(result.item())  # convert tensor into int
 
 
 # train()
-single_test('./True_test/AZ010.png')
+single_test('./True_test/MO041.png')
+# single_test('./False_test/F19112.png')
