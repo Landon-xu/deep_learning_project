@@ -8,8 +8,10 @@ from TrainAndTest import *
 def findRect_and_determine(image_path):
     rect_images = find_rect(image_path)  # rect_images是一个list，存储所有的矩形图片
 
-    num_True = 0  # 判断为True的个数
+    if(len(rect_images) < 1):  # rect_images为空，即没有矩形，抛异常
+        raise RuntimeError('Cannot detect any rectangle.')
 
+    num_True = 0  # 判断为True的个数
     image_return = rect_images[0]  # 为返回值开辟空间
 
     for image in rect_images:
@@ -24,13 +26,17 @@ def findRect_and_determine(image_path):
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
+    # num_True不等于1时，抛异常
     if(num_True > 1):
-        raise RuntimeError('The num of True in the 1st CNN is more than 1.')  # 抛异常
+        raise RuntimeError('The num of True image in the 1st CNN is more than one.')
+    if (num_True == 0):
+        raise RuntimeError('Cannot detect any True image in the 1st CNN.')
 
     return image_return
 
+
 # test
-image = findRect_and_determine('./image_license_plate/222.jpeg')
+image = findRect_and_determine('./image_license_plate/18.jpeg')
 cv2.imshow('True', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

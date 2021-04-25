@@ -26,7 +26,8 @@ def crop_rect(img, rect):  # 旋转图像转正 https://blog.csdn.net/loovelj/ar
 
 def find_rect(img_path):
     im = cv2.imread(img_path)
-    imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)  # 转换为灰度图
+    if len(im.shape) == 3:
+        imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)  # 转换为灰度图
 
     ret, thresh = cv2.threshold(imgray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)  # 大津阈值
     contours = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # cv2.RETR_EXTERNAL 定义只检测外围轮廓
@@ -59,4 +60,5 @@ def find_rect(img_path):
     return img_return
 
 
+# test
 # find_rect('./image_license_plate/111.jpeg')
